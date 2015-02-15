@@ -56,6 +56,9 @@
         <li>{{ HTML::link('assignedroles/index', 'Assign Roles') }}</li>
         </ul>
         </li> 
+        <li>
+        <a href="{{Request::root()}}/simulator/index">Simulator</a>
+        </li>
       </ul>
     
     </div><!-- /.navbar-collapse -->

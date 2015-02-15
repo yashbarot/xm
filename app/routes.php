@@ -18,16 +18,35 @@ Route::get('/', function()
 		$results = $reader->all();
 		
 		DB::table('reach')->where('project_id','=',1)->delete();
+		DB::table('frequency')->where('project_id','=',1)->delete();
+		DB::table('grp')->where('project_id','=',1)->delete();
+		DB::table('media')->where('project_id','=',1)->delete();
+		DB::table('contribution')->where('project_id','=',1)->delete();
+
 		DB::table('project_data')->where('project_id','=',1)->delete();
 		foreach ($results as $key => $value) {		
-		$i = 1;$k = 1;
+		$i = 1;
 		$j = 1;
-		$column_num = [];
-		$column_num1 = [];
+		$k = 1;
+		$l = 1;
+		$m = 1;
+		$n = 1;
+		$o = 1;
+		$column_num 	= [];
+		$reach 			= [];
+		$frequency 		= [];
+		$grp 			= [];
+		$media 			= [];
+		$contribution 	= [];
 		$column_num['project_id'] = 1;
-		$column_num1['project_id'] = 1;
+		$reach['project_id'] = 1;
+		$frequency['project_id'] = 1;
+		$grp['project_id'] = 1;
+		$media['project_id'] = 1;
+		$contribution['project_id'] = 1;
+
 			foreach($value as $key1 => $a){
-				if($j < 17) {
+				if($j < 20) {
 					if($a!=NULL && $key1!='no_filter'){
 						$column_num['column_'.$i] = $a;
 					}if($key1 === 'no_filter'){
@@ -35,18 +54,61 @@ Route::get('/', function()
 						$i = 12;
 					}
 					$i++;
-				} else if($j > 16 && $j < 40) {
+				} else if($j > 19 && $j < 43) {
 					if($a!=NULL){
-						$column_num1['column_'.$k] = $a;
+						$reach['column_'.$k] = $a;
+					} else {
+						$reach['column_'.$k] = 0;
 					}
 					$k++;
-				}
+				} else if($j > 42 && $j < 66) {
+					if($a!=NULL){
+						$frequency['column_'.$l] = $a;
+					} else {
+						$frequency['column_'.$l] = 0;
+					}
+					$l++;
+				} else if($j > 65 && $j < 89) {
+					if($a!=NULL){
+						$grp['column_'.$m] = $a;
+					} else {
+						$grp['column_'.$m] = 0;
+					}
+					$m++;
+				} else if($j > 88 && $j < 112) {
+					if($a!=NULL){
+						$media['column_'.$n] = $a;
+					} else {
+						$media['column_'.$n] = 0;
+					}
+					$n++;
+				} else if($j > 111 && $j < 135) {
+					if($a!=NULL){
+						$contribution['column_'.$o] = $a;
+					} else {
+						$contribution['column_'.$o] = 0;
+					}
+					$o++;
+				} 
 				$j++;
 			}
 			$id = DB::table('project_data')->insertGetId($column_num);
-			$column_num1['project_data_id'] = $id;
-			DB::table('reach')->insert($column_num1);
+
+			
+			$reach['project_data_id'] 			= $id;
+			$frequency['project_data_id'] 		= $id;
+			$grp['project_data_id'] 			= $id;
+			$media['project_data_id'] 			= $id;
+			$contribution['project_data_id'] 	= $id;
+	
+			
+			DB::table('reach')->insert($reach);
+			DB::table('frequency')->insert($frequency);
+			DB::table('grp')->insert($grp);
+			DB::table('media')->insert($media);
+			DB::table('contribution')->insert($contribution);
 		}
+
 
 		$count = 0;
 		$headers_csv = $reader->first();
@@ -76,6 +138,7 @@ Route::get('/', function()
 	return View::make('homepage');
 });
 Route::get('simulator/index', 'SimulatorController@index');
+Route::post('simulator/filters', 'SimulatorController@doFiltering');
 
 // Confide routes
 Route::get('users/create', 'UsersController@create');
