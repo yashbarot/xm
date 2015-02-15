@@ -10,12 +10,13 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
+       
        $(".filter_btn").on('click',function(){
         
         var $this = $(this);
         var filters = [];
         var i = 0;
-		
+
 		$(".filters").each(function(){
 			filters[i] = $(this).val();
 			i++;
@@ -31,7 +32,9 @@
             },
             success: function(response) {
              	//alert($(".TV")[0].selectedIndex);
-             	var type_media = ['#reach','#frequency','#grp','#media','#contribution'];
+             	data_array = response;
+
+             	var type_media = ['#reach_100','#frequency_100','#grp_100','#media_100','#contribution_100'];
              	var i = 0;
              	$.each(response,function(key,value) {
              		j = 0;
@@ -46,10 +49,36 @@
                 alert("Invalid data");
             }
         });
+
       });
+  		
+  		$('select').on('change',function(){
+  			var type_media1 = ['#reach','#frequency','#grp','#media','#contribution'];
+  			var k = 0;
+  			var ab = $(this);
+  			var index = $(this)[0].selectedIndex;
+             	$.each(data_array,function(key,value) {
+             		l = 0;
+             		if(key == ab.attr('class')) {
+	             		$.each(value,function(key1,data) {
+	             			a = index+1;
+	             			$(type_media1[l]+k).html(data['column_'+a]);
+	             			l = l+1;
+	             		});
+	             	}
+             		k = k+1;
+             	});
+            $.each(data_array,function(key,value) {
+             		if(key.indexOf('&') > -1) {
+             			var split = key.split('&');
+             			var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val()));
+             		}
+             	});
+
+
+  		});
     });
 </script>
-<div class="row clearfix">
 <div class="col-md-12 column">
 <div class="panel panel-default">
 <div class="panel-heading">
@@ -84,10 +113,10 @@
 				<th>Total</th>
 			</tr>
 			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+				<td id = "base">&nbsp;</td>
+				<td id = "uplift">&nbsp;</td>
+				<td id = "media_uplift">&nbsp;</td>
+				<td id = "total">&nbsp;</td>
 			</tr>
 		</table>
 	</div>
@@ -141,12 +170,12 @@
 		    	<tr>
 			    	@for ($i = 0; $i < $count; $i++)
 	    				<td colspan="2">
-	    					<select class="{{$data_columns_fix[$i]}}">
+	    					<select class="{{$data_columns_fix[$i]}}" id="{{$data_columns_fix[$i]}}">
 	    						@foreach($scenarios as $scenario)
 	    						@if($scenario->value == '100')
-	    							<option value="{{$scenario->id}}" selected="selected" >{{$scenario->value}}</option>
+	    							<option value="{{$scenario->value}}" selected="selected" >{{$scenario->value}}</option>
 	    						@else
-	    							<option value="{{$scenario->id}}">{{$scenario->value}}</option>
+	    							<option value="{{$scenario->value}}">{{$scenario->value}}</option>
 	    						@endif	
 	    						@endforeach
 	    					</select>
@@ -160,32 +189,32 @@
 
 		    	<tr>
 		    		@for ($i = 0; $i < $counter; $i=$i+1)
-	    				<td class="{{$data_columns_fix[$i]}}">&nbsp;</td>
 	    				<td class="{{$data_columns_fix[$i]}}" id="reach{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="reach_100{{$i}}">&nbsp;</td>
 					@endfor
 		    	</tr>
 		    	<tr>
 		    		@for ($i = 0; $i < $counter; $i++)
-	    				<td class="{{$data_columns_fix[$i]}}">&nbsp;</td>
 	    				<td class="{{$data_columns_fix[$i]}}" id="frequency{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="frequency_100{{$i}}">&nbsp;</td>
 					@endfor
 		    	</tr>
 		    	<tr>
 		    		@for ($i = 0; $i < $counter; $i++)
-	    				<td class="{{$data_columns_fix[$i]}}">&nbsp;</td>
 	    				<td class="{{$data_columns_fix[$i]}}" id="grp{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="grp_100{{$i}}">&nbsp;</td>
 					@endfor
 		    	</tr>
 		    	<tr>
 		    		@for ($i = 0; $i < $counter; $i++)
-	    				<td class="{{$data_columns_fix[$i]}}">&nbsp;</td>
 	    				<td class="{{$data_columns_fix[$i]}}" id="media{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="media_100{{$i}}">&nbsp;</td>
 					@endfor
 		    	</tr>
 		    	<tr>
 		    		@for ($i = 0; $i < $counter; $i++)
-	    				<td class="{{$data_columns_fix[$i]}}">&nbsp;</td>
 	    				<td class="{{$data_columns_fix[$i]}}" id="contribution{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="contribution_100{{$i}}">&nbsp;</td>
 					@endfor
 		    	</tr>
 
