@@ -60,5 +60,6 @@ class SimulatorController extends BaseController {
 			$temp_all_data[$media_type[$i]] = $all_data;
 			$i++;
 		}
+		return json_encode($temp_all_data);
 	}
 }
