@@ -10,11 +10,11 @@ class SimulatorController extends BaseController {
 		$data_columns = [];
 		for($i = 1;$i < sizeof($category_names); $i++){
 			$temp = DB::table('project_data')->distinct()->lists('column_'.$i);
-			array_push($data_columns,$temp[0]);
+			array_push($data_columns,$temp);
 		}
         
 		$temp = DB::table('project_data')->distinct()->lists('column_14');
-		array_push($data_columns,$temp[0]);
+		array_push($data_columns,$temp);
 		$data_columns_fix = DB::table('project_data')->distinct()->lists('column_13');
 		$scenarios = DB::table('scenarios')->where('project_id','=',1)->get();
 		$column_14 = DB::table('project_data')->distinct()->lists('column_14');

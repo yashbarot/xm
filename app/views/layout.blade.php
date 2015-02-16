@@ -29,7 +29,30 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+       @if(Auth::check())
       <ul class="nav navbar-nav">
+       
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Users <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">            
+        <li>{{ HTML::link('roles/index', 'Roles') }}</li>
+        <li>{{ HTML::link('permissions/index', 'Permissions') }}</li>
+        <li>{{ HTML::link('permissionroles/index', 'Permission Roles') }}</li>
+        <li>{{ HTML::link('assignedroles/index', 'Assign Roles') }}</li>
+        </ul>
+        </li> 
+        <li>
+          <a href="{{Request::root()}}/simulator/index">Simulator</a>
+        </li>
+        <li>
+          <a href="{{Request::root()}}/project_master/index">Project Master</a>
+        </li>
+        <li>
+          <a href="{{Request::root()}}/project_master/new_project_form">Import Sheet</a>
+        </li>
+      </ul>
+      @endif
+      <ul class="nav navbar-nav navbar-right">
         @if(!Auth::check())
       
       <li>
@@ -47,18 +70,6 @@
       @else
         <li>{{ HTML::link('users/logout', 'Logout') }}</li>
       @endif  
-        <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Users <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">            
-        <li>{{ HTML::link('roles/index', 'Roles') }}</li>
-        <li>{{ HTML::link('permissions/index', 'Permissions') }}</li>
-        <li>{{ HTML::link('permissionroles/index', 'Permission Roles') }}</li>
-        <li>{{ HTML::link('assignedroles/index', 'Assign Roles') }}</li>
-        </ul>
-        </li> 
-        <li>
-        <a href="{{Request::root()}}/simulator/index">Simulator</a>
-        </li>
       </ul>
     
     </div><!-- /.navbar-collapse -->

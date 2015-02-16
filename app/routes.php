@@ -13,132 +13,16 @@
 
 Route::get('/', function()
 {
-	Excel::selectSheets('Sheet1')->load('file.xlsx', function($reader) {
-		    
-		$results = $reader->all();
-		
-		DB::table('reach')->where('project_id','=',1)->delete();
-		DB::table('frequency')->where('project_id','=',1)->delete();
-		DB::table('grp')->where('project_id','=',1)->delete();
-		DB::table('media')->where('project_id','=',1)->delete();
-		DB::table('contribution')->where('project_id','=',1)->delete();
-
-		DB::table('project_data')->where('project_id','=',1)->delete();
-		foreach ($results as $key => $value) {		
-		$i = 1;
-		$j = 1;
-		$k = 1;
-		$l = 1;
-		$m = 1;
-		$n = 1;
-		$o = 1;
-		$column_num 	= [];
-		$reach 			= [];
-		$frequency 		= [];
-		$grp 			= [];
-		$media 			= [];
-		$contribution 	= [];
-		$column_num['project_id'] = 1;
-		$reach['project_id'] = 1;
-		$frequency['project_id'] = 1;
-		$grp['project_id'] = 1;
-		$media['project_id'] = 1;
-		$contribution['project_id'] = 1;
-
-			foreach($value as $key1 => $a){
-				if($j < 20) {
-					if($a!=NULL && $key1!='no_filter'){
-						$column_num['column_'.$i] = $a;
-					}if($key1 === 'no_filter'){
-						$j = 12;
-						$i = 12;
-					}
-					$i++;
-				} else if($j > 19 && $j < 43) {
-					if($a!=NULL){
-						$reach['column_'.$k] = $a;
-					} else {
-						$reach['column_'.$k] = 0;
-					}
-					$k++;
-				} else if($j > 42 && $j < 66) {
-					if($a!=NULL){
-						$frequency['column_'.$l] = $a;
-					} else {
-						$frequency['column_'.$l] = 0;
-					}
-					$l++;
-				} else if($j > 65 && $j < 89) {
-					if($a!=NULL){
-						$grp['column_'.$m] = $a;
-					} else {
-						$grp['column_'.$m] = 0;
-					}
-					$m++;
-				} else if($j > 88 && $j < 112) {
-					if($a!=NULL){
-						$media['column_'.$n] = $a;
-					} else {
-						$media['column_'.$n] = 0;
-					}
-					$n++;
-				} else if($j > 111 && $j < 135) {
-					if($a!=NULL){
-						$contribution['column_'.$o] = $a;
-					} else {
-						$contribution['column_'.$o] = 0;
-					}
-					$o++;
-				} 
-				$j++;
-			}
-			$id = DB::table('project_data')->insertGetId($column_num);
-
-			
-			$reach['project_data_id'] 			= $id;
-			$frequency['project_data_id'] 		= $id;
-			$grp['project_data_id'] 			= $id;
-			$media['project_data_id'] 			= $id;
-			$contribution['project_data_id'] 	= $id;
 	
-			
-			DB::table('reach')->insert($reach);
-			DB::table('frequency')->insert($frequency);
-			DB::table('grp')->insert($grp);
-			DB::table('media')->insert($media);
-			DB::table('contribution')->insert($contribution);
-		}
-
-
-		$count = 0;
-		$headers_csv = $reader->first();
-		DB::table('category_masters')->where('project_id','=',1)->delete();
-		foreach ($headers_csv as $key => $value) {
-			if($count < 12 && $key != 'no_filter'){
-				DB::table('category_masters')->insert(['project_id' => 1,'name' => $key]);
-			}
-			$count++;
-			if($key == 'no_filter') {
-				break;
-			}
-			
-		}
-
-	})->get();	
-
-	Excel::selectSheets('Sheet2')->load('file.xlsx', function($reader) {
-		    
-		$results = $reader->all();
-		DB::table('scenarios')->where('project_id','=',1)->delete();
-		foreach ($results as $key => $value) {			
-			DB::table('scenarios')->insert(['project_id' => 1,'value' => $value->value]);
-		}	
-	})->get();
-		
-	return View::make('homepage');
 });
-Route::get('simulator/index', 'SimulatorController@index');
+Route::get('simulator/index', 'SimulatorController@index')->before('isAdmin');
 Route::post('simulator/filters', 'SimulatorController@doFiltering');
+
+Route::get('project_master/index', ['as' => 'project_master.index', 'uses' => 'ProjectMastersController@index', 'before' => 'isAdmin']);
+Route::get('project_master/create', ['as' => 'project_master.create', 'uses' => 'ProjectMastersController@create', 'before' => 'isAdmin']);
+Route::post('project_master/store', ['as' => 'project_master.store', 'uses'  => 'ProjectMastersController@store', 'before' => 'isAdmin']);
+Route::get('project_master/new_project_form', ['as' => 'project_master.new_project_form', 'uses' => 'ProjectMastersController@new_project_form', 'before' => 'isAdmin']);
+Route::post('project_master/store_new_project_form', ['as' => 'project_master.store_new_project_form', 'uses'  => 'ProjectMastersController@store_new_project_form', 'before' => 'isAdmin']);
 
 // Confide routes
 Route::get('users/create', 'UsersController@create');

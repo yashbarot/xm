@@ -22,18 +22,15 @@
 			i++;
 		});
 
-        $.ajax({
-            type: $this.data('method'),
-            url: $this.data('href'),
-            data: {category_names: filters},
-            dataType: 'json',
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            },
-            success: function(response) {
-             	//alert($(".TV")[0].selectedIndex);
-             	data_array = response;
-
+        $.when($.ajax({
+					            type: $this.data('method'),
+					            url: $this.data('href'),
+					            data: {category_names: filters},
+					            dataType: 'json'
+					        }))
+        
+        .then(function(response){
+        	data_array = response;
              	var type_media = ['#reach_100','#frequency_100','#grp_100','#media_100','#contribution_100'];
              	var i = 0;
              	$.each(response,function(key,value) {
@@ -44,11 +41,7 @@
              		});
              		i = i+1;
              	});
-            },
-            error: function(response) {
-                alert("Invalid data");
-            }
-        });
+	        });
 
       });
   		
@@ -71,7 +64,15 @@
             $.each(data_array,function(key,value) {
              		if(key.indexOf('&') > -1) {
              			var split = key.split('&');
-             			var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val()));
+             			if(split.length == 2) {
+             				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val());
+             				console.log($("#"+split[0]).index(''+add_value));
+             				//document.getElementById("#"+split[0]).selectedIndex
+             			}if(split.length == 3) {
+             				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val());
+             			}if(split.length == 4) {
+             				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val())+parseInt($("#"+split[3]).val());;
+             			}
              		}
              	});
 
@@ -83,29 +84,34 @@
 <div class="panel panel-default">
 <div class="panel-heading">
 <div class="row">
-<div class="col-md-10"><h2><span class="glyphicon glyphicon-list-alt"></span>&nbsp;Simulator</h2></div>
+<div class="col-md-10"><h2>Simulator</h2></div>
 </div>
-<div class="row">   
-   <div class="col-lg-4" style="margin-bottom:15px;">
+<hr style="margin-top: 0px;margin-bottom: 25px;"/>
+<div class="row" style="margin-left: 1px;">   
+   <div class="col-lg-5" style="margin-bottom:15px;border:1px solid #999;">
 	<div class="form-group">
  
         <?php $count = 0; ?>
-        @foreach($data_columns as $key => $value)
-        <p class="filter_dropdown">{{$category_names[$count]}}
-        <select class="form-control filters">
-	            <option value="{{$value}}" class="form-control">{{$value}}</option>
-        </select>
-        </p>
-            <?php $count++; ?>
+        @foreach($data_columns as $filters)
+		        <p class="filter_dropdown" style="margin: 5px;text-transform: capitalize;font-weight:600;">{{$category_names[$count]}}
+		        <select class="form-control filters">
+		        <?php echo '<pre>'; var_dump($filters); ?>
+		        @foreach($filters as $filter)
+			            <option value="{{$filter}}" class="form-control">{{$filter}}</option>
+			    @endforeach
+		        </select>
+		        </p>
+		        <?php $count++; ?>
         @endforeach
+        <button class="btn btn-info filter_btn" style="float:right;margin: 20px;" data-method="post" data-href="{{Request::root()}}/simulator/filters">Filter</button><br/>
     </div>
 	</div>
 
 </div>
-<div class="row">   
-   <div class="col-lg-4" style="margin-bottom:15px;">
+<div class="row" style="margin-left: 1px;">   
+  
 	<div class="form-group">
-		<table border="1">
+		<table border="1" style="border: 1px solid #999;margin-bottom:15px;"  class="col-lg-5" >
 			<tr>
 				<th>Base</th>
 				<th>Non-Media Uplift</th>
@@ -120,18 +126,18 @@
 			</tr>
 		</table>
 	</div>
-	</div>
+	
 </div>	
-<button class="btn btn-info filter_btn" style="float:right;" data-method="post" data-href="{{Request::root()}}/simulator/filters">Filter</button><br/>
+
 	<div class="row">
 		<div class="col-md-2">
 			
-			<table border="1">
+			<table border="1" style="border: 1px solid #999;">
 				<tr>
 					<th>Constant Values</th>
 				</tr>
 				<tr>
-					<td>Increase/Decrease Budget</td>
+					<td style="height: 39px;">Increase/Decrease Budget</td>
 				</tr>
 				<tr>
 					<td>Reach</td>
@@ -152,8 +158,8 @@
 				
 		</div>
 
-		<div class="col-md-8">
-			<table border="1">
+		<div class="col-md-3" style="margin-left: -22px;overflow-x: scroll;max-width: 350px;width: 350px;">
+			<table border="1" style="border: 1px solid #999;width: 335px;">
 				<tr>
 					<?php $counter = 0;$count = 0; ?>
 			        @foreach($data_columns_fix as $key => $value)
@@ -222,8 +228,82 @@
 		</div>	
 	</div>
 
-	
+<div class="row" style="margin-top:15px;">
+		<div class="col-md-2">
+			
+			<table border="1" style="border: 1px solid #999;">
+				<tr>
+					<th style="height: 39px;">&nbsp;</th>
+				</tr>
+				<tr>
+					<td>Media Spend(Million RMB)</td>
+				</tr>
+				<tr>
+					<td>Media Uplift<label style="color:red;">*</label></td>
+				</tr>
+				<tr>
+					<td>Cost efficiency<label style="color:red;">**</label></td>
+				</tr>
+			</table>
+				
+		</div>
 
+		<div class="col-md-3" style="margin-left: -22px;overflow-x: scroll;max-width: 350px;width: 350px;">
+			<table border="1" style="border: 1px solid #999;width: 335px;">
+				<tr>
+					<?php $counter = 0;$count = 0; ?>
+			        @foreach($data_columns_fix as $key => $value)
+				            	
+				            	<?php $pos = strpos($value,'&'); ?>
+				            	@if($pos)
+				            	   <?php $count++;?>
+				            	@else
+				            	<th colspan="2">{{$value}}</th>   
+				            	@endif
+				            	<?php $counter++; ?>
+			        @endforeach
+			        <?php $count = $counter - $count; ?>
+			        <th colspan="2">Total</th>
+		    	</tr>
+		    	<tr>
+		    		@for ($i = 0; $i < $counter; $i=$i+1)
+	    				<td class="{{$data_columns_fix[$i]}}" id="reach{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="reach_100{{$i}}">&nbsp;</td>
+					@endfor
+		    	</tr>
+		    	<tr>
+		    		@for ($i = 0; $i < $counter; $i++)
+	    				<td class="{{$data_columns_fix[$i]}}" id="frequency{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="frequency_100{{$i}}">&nbsp;</td>
+					@endfor
+		    	</tr>
+		    	<tr>
+		    		@for ($i = 0; $i < $counter; $i++)
+	    				<td class="{{$data_columns_fix[$i]}}" id="grp{{$i}}">&nbsp;</td>
+	    				<td class="{{$data_columns_fix[$i]}}" id="grp_100{{$i}}">&nbsp;</td>
+					@endfor
+		    	</tr>
+
+			</table>
+		</div>	
+	</div>
+	<div class="row">
+		<div class="col-md-5">
+			<table border="1" style="border:1px solid #999;">
+				<tr>
+					<th>Planned Impacts</th>
+				</tr>
+				<tr>
+					<th>Simulated Impacts</th>
+				</tr>
+			</table>
+		</div>
+		
+	</div>
+<ul style="list-style:none;padding-left: 0px;padding-top: 10px;color:red;">
+			<li>*Total media uplift includes synergies</li>
+			<li>**Cost efficiency = Uplift/Spend</li>
+		</ul>
 </div>
 </div>
 </div>

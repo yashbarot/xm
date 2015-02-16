@@ -99,7 +99,7 @@ Route::filter('csrf', function()
 
 Route::filter('isAdmin', function($route, $request)
 {
-    if(!Auth::check()) return Redirect::guest('login');
+    if(!Auth::check()) return Redirect::guest('users/login');
     if (! Entrust::hasRole('admin') ) // Checks the current user
     {
        //Session::flash('message', 'Opps!! Access Denied.'); 
