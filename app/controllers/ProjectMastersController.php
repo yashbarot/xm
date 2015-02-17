@@ -188,7 +188,7 @@ class ProjectMastersController extends \BaseController {
 
 	})->get();	
 
-	Excel::selectSheets('Sheet2')->load('file.xlsx', function($reader) {
+	Excel::selectSheets('Sheet2')->load($file_path, function($reader) {
 		$project_master_id = Input::get('project_master_id');    
 		$results = $reader->all();
 		DB::table('scenarios')->where('project_id','=',$project_master_id)->delete();
@@ -197,7 +197,9 @@ class ProjectMastersController extends \BaseController {
 		}	
 	})->get();
 		
-	return View::make('homepage');
+		Session::flash('message', 'Data has been imported successfully.'); 
+		Session::flash('alert-class', 'alert-success');		
+		return Redirect::route('project_master.index');
 	
         }
        }

@@ -15,6 +15,7 @@
         
         var $this = $(this);
         var filters = [];
+
         var i = 0;
 
 		$(".filters").each(function(){
@@ -22,14 +23,14 @@
 			i++;
 		});
 
-        $.when($.ajax({
+        var request = $.ajax({
 					            type: $this.data('method'),
 					            url: $this.data('href'),
-					            data: {category_names: filters},
+					            data: {category_names: filters,id:$this.data('id')},
 					            dataType: 'json'
-					        }))
+					        });
         
-        .then(function(response){
+        request.done(function(response){
         	data_array = response;
              	var type_media = ['#reach_100','#frequency_100','#grp_100','#media_100','#contribution_100'];
              	var i = 0;
@@ -43,11 +44,41 @@
              	});
 	        });
 
+        var request1 = $.ajax({
+					            type: $this.data('method'),
+					            url: $this.data('projects'),
+					            data: {category_names: filters,id:$this.data('id')},
+					            dataType: 'json'
+					        });
+
+        request1.done(function(response1){
+        		$("#base").html(response1.column_15);
+        		$("#non_uplift").html(response1.column_16);
+	        });
+
+        var request2 = $.ajax({
+					            type: $this.data('method'),
+					            url: $this.data('scenarios'),
+					            data: {id:$this.data('id')},
+					            dataType: 'json'
+					        });
+        request2.done(function(response2){
+        		scenario_data = response2;
+	        });
+
       });
+
+		function nearest(n, v, e) {
+			n = n / e;
+		    n = n / v;
+		    n = Math.round(n) * v;
+		    return n;
+		}
   		
   		$('select').on('change',function(){
   			var type_media1 = ['#reach','#frequency','#grp','#media','#contribution'];
   			var k = 0;
+  			var z = 0;
   			var ab = $(this);
   			var index = $(this)[0].selectedIndex;
              	$.each(data_array,function(key,value) {
@@ -66,14 +97,53 @@
              			var split = key.split('&');
              			if(split.length == 2) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val());
-             				console.log($("#"+split[0]).index(''+add_value));
-             				//document.getElementById("#"+split[0]).selectedIndex
+             				var temp_value = nearest(add_value,5,2);
+             				var data_key;
+             				for (data in scenario_data) {
+             					if(scenario_data[data] == temp_value) {
+             						data_key = data;
+  								}
+             				}
+             				l = 0;
+             				$.each(value,function(key1,data) {
+             					b = parseInt(data_key)+1;
+	             				$(type_media1[l]+z).html(data['column_'+b]);
+	             				l = l+1;
+	             			});
              			}if(split.length == 3) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val());
+             				var temp_value = nearest(add_value,5,3);
+             				var data_key;
+             				for (data in scenario_data) {
+             					if(scenario_data[data] == temp_value) {
+             						data_key = data;
+  								}
+             				}
+             				l = 0;
+             				$.each(value,function(key1,data) {
+             					b = parseInt(data_key)+1;
+	             				$(type_media1[l]+z).html(data['column_'+b]);
+	             				l = l+1;
+	             			});
+
              			}if(split.length == 4) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val())+parseInt($("#"+split[3]).val());;
+             				var temp_value = nearest(add_value,5,4);
+             				var data_key;
+             				for (data in scenario_data) {
+             					if(scenario_data[data] == temp_value) {
+             						data_key = data;
+  								}
+             				}
+             				l = 0;
+             				$.each(value,function(key1,data) {
+             					b = parseInt(data_key)+1;
+	             				$(type_media1[l]+z).html(data['column_'+b]);
+	             				l = l+1;
+	             			});
              			}
              		}
+             		z = z+1;
              	});
 
 
@@ -90,7 +160,7 @@
 <div class="row" style="margin-left: 1px;">   
    <div class="col-lg-5" style="margin-bottom:15px;border:1px solid #999;">
 	<div class="form-group">
- 
+ 	
         <?php $count = 0; ?>
         @foreach($data_columns as $filters)
 		        <p class="filter_dropdown" style="margin: 5px;text-transform: capitalize;font-weight:600;">{{$category_names[$count]}}
@@ -103,7 +173,7 @@
 		        </p>
 		        <?php $count++; ?>
         @endforeach
-        <button class="btn btn-info filter_btn" style="float:right;margin: 20px;" data-method="post" data-href="{{Request::root()}}/simulator/filters">Filter</button><br/>
+        <button class="btn btn-info filter_btn" style="float:right;margin: 20px;" data-id="{{$id}}" data-method="post" data-href="{{Request::root()}}/simulator/filters" data-projects="{{Request::root()}}/simulator/projects" data-scenarios="{{Request::root()}}/simulator/scenarios">Filter</button><br/>
     </div>
 	</div>
 
@@ -120,7 +190,7 @@
 			</tr>
 			<tr>
 				<td id = "base">&nbsp;</td>
-				<td id = "uplift">&nbsp;</td>
+				<td id = "non_uplift">&nbsp;</td>
 				<td id = "media_uplift">&nbsp;</td>
 				<td id = "total">&nbsp;</td>
 			</tr>

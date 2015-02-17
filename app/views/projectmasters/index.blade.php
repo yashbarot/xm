@@ -31,8 +31,7 @@
 	<td> {{ $project->created_at }} </td>
 	<td> {{ $project->updated_at }} </td>
 	<td>
-	<a href="" class="glyphicon glyphicon-pencil edit-project-popup"></a>
-	<a href="" class="glyphicon glyphicon-remove"></a>
+	<a href="{{Request::root()}}/simulator/index/{{$project->id}}" class="btn btn-info btn-xs">View Simulator</a>
 	</td>
 	</tr>
 	@endforeach 

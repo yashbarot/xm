@@ -13,10 +13,12 @@
 
 Route::get('/', function()
 {
-	
+	return View::make('homepage');
 });
-Route::get('simulator/index', 'SimulatorController@index')->before('isAdmin');
+Route::get('simulator/index/{id}', 'SimulatorController@index')->before('isAdmin');
 Route::post('simulator/filters', 'SimulatorController@doFiltering');
+Route::post('simulator/projects', 'SimulatorController@projects')->before('isAdmin');
+Route::post('simulator/scenarios', 'SimulatorController@scenarios')->before('isAdmin');
 
 Route::get('project_master/index', ['as' => 'project_master.index', 'uses' => 'ProjectMastersController@index', 'before' => 'isAdmin']);
 Route::get('project_master/create', ['as' => 'project_master.create', 'uses' => 'ProjectMastersController@create', 'before' => 'isAdmin']);

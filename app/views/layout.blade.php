@@ -42,9 +42,6 @@
         </ul>
         </li> 
         <li>
-          <a href="{{Request::root()}}/simulator/index">Simulator</a>
-        </li>
-        <li>
           <a href="{{Request::root()}}/project_master/index">Project Master</a>
         </li>
         <li>
