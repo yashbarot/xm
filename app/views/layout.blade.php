@@ -44,9 +44,14 @@
         <li>{{ HTML::link('assignedroles/index', 'Assign Roles') }}</li>
         </ul>
         </li>
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Uploads <span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">  
         <li>{{ HTML::link('project_master/new_project_form', 'Import Sheet') }}</li>
         <li>{{ HTML::link('project_master/logo_upload_form', 'Upload Logo') }}</li>
         <li>{{ HTML::link('project_master/pdf_upload_form', 'Upload Pdf') }}</li>
+        </ul>
+        </li>
         <li>{{ HTML::link('project_master/assign_project_form', 'Assign Project') }}</li>
         @endif
         <li>
