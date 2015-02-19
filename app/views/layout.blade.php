@@ -9,6 +9,8 @@
   {{ HTML::style('css/bootstrap.min.css'); }}
   {{ HTML::style('css/style.css'); }}
   {{ HTML::script('js/jquery.min.js') }}
+  {{ HTML::script('js/Chart.js') }}
+  {{ HTML::script('js/Chart.StackedBar.js') }}
   {{ HTML::script('js/bootstrap.min.js') }}
 </head>
 <body>
@@ -31,7 +33,8 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
        @if(Auth::check())
       <ul class="nav navbar-nav">
-       
+       <?php $user = Auth::user(); ?>  
+        @if($user->hasRole('admin'))
         <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Users <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">            
@@ -40,13 +43,16 @@
         <li>{{ HTML::link('permissionroles/index', 'Permission Roles') }}</li>
         <li>{{ HTML::link('assignedroles/index', 'Assign Roles') }}</li>
         </ul>
-        </li> 
+        </li>
+        <li>{{ HTML::link('project_master/new_project_form', 'Import Sheet') }}</li>
+        <li>{{ HTML::link('project_master/logo_upload_form', 'Upload Logo') }}</li>
+        <li>{{ HTML::link('project_master/pdf_upload_form', 'Upload Pdf') }}</li>
+        <li>{{ HTML::link('project_master/assign_project_form', 'Assign Project') }}</li>
+        @endif
         <li>
           <a href="{{Request::root()}}/project_master/index">Project Master</a>
         </li>
-        <li>
-          <a href="{{Request::root()}}/project_master/new_project_form">Import Sheet</a>
-        </li>
+      
       </ul>
       @endif
       <ul class="nav navbar-nav navbar-right">

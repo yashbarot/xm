@@ -74,6 +74,10 @@
 		    n = Math.round(n) * v;
 		    return n;
 		}
+
+		$("select").on('change',function(){
+			$("#total").html(((parseInt($("#media_uplift").html())) || 0 )+parseInt($("#base").html())+parseInt($("#non_uplift").html()));
+		});
   		
   		$('select').on('change',function(){
   			var type_media1 = ['#reach','#frequency','#grp','#media','#contribution'];
@@ -86,7 +90,11 @@
              		if(key == ab.attr('class')) {
 	             		$.each(value,function(key1,data) {
 	             			a = index+1;
-	             			$(type_media1[l]+k).html(data['column_'+a]);
+	             			if(ab.val() != "100") {
+	             				$(type_media1[l]+k).html(data['column_'+a]);
+	             			} else {
+	             				$(type_media1[l]+k).html("");
+	             			}
 	             			l = l+1;
 	             		});
 	             	}
@@ -94,42 +102,20 @@
              	});
             $.each(data_array,function(key,value) {
              		if(key.indexOf('&') > -1) {
+             			
              			var split = key.split('&');
+             			
              			if(split.length == 2) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val());
              				var temp_value = nearest(add_value,5,2);
-             				var data_key;
-             				for (data in scenario_data) {
-             					if(scenario_data[data] == temp_value) {
-             						data_key = data;
-  								}
-             				}
-             				l = 0;
-             				$.each(value,function(key1,data) {
-             					b = parseInt(data_key)+1;
-	             				$(type_media1[l]+z).html(data['column_'+b]);
-	             				l = l+1;
-	             			});
-             			}if(split.length == 3) {
+             			} if(split.length == 3) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val());
              				var temp_value = nearest(add_value,5,3);
-             				var data_key;
-             				for (data in scenario_data) {
-             					if(scenario_data[data] == temp_value) {
-             						data_key = data;
-  								}
-             				}
-             				l = 0;
-             				$.each(value,function(key1,data) {
-             					b = parseInt(data_key)+1;
-	             				$(type_media1[l]+z).html(data['column_'+b]);
-	             				l = l+1;
-	             			});
-
-             			}if(split.length == 4) {
+             			} if(split.length == 4) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val())+parseInt($("#"+split[3]).val());;
              				var temp_value = nearest(add_value,5,4);
-             				var data_key;
+             			}
+             			var data_key;
              				for (data in scenario_data) {
              					if(scenario_data[data] == temp_value) {
              						data_key = data;
@@ -141,12 +127,9 @@
 	             				$(type_media1[l]+z).html(data['column_'+b]);
 	             				l = l+1;
 	             			});
-             			}
              		}
              		z = z+1;
              	});
-
-
   		});
     });
 </script>
@@ -176,12 +159,11 @@
         <button class="btn btn-info filter_btn" style="float:right;margin: 20px;" data-id="{{$id}}" data-method="post" data-href="{{Request::root()}}/simulator/filters" data-projects="{{Request::root()}}/simulator/projects" data-scenarios="{{Request::root()}}/simulator/scenarios">Filter</button><br/>
     </div>
 	</div>
-
 </div>
 <div class="row" style="margin-left: 1px;">   
   
 	<div class="form-group">
-		<table border="1" style="border: 1px solid #999;margin-bottom:15px;"  class="col-lg-5" >
+		<table border="1" style="border: 1px solid #999;margin-bottom:15px;"  class="col-lg-5" id="first_table">
 			<tr>
 				<th>Base</th>
 				<th>Non-Media Uplift</th>

@@ -20,11 +20,20 @@ Route::post('simulator/filters', 'SimulatorController@doFiltering');
 Route::post('simulator/projects', 'SimulatorController@projects')->before('isAdmin');
 Route::post('simulator/scenarios', 'SimulatorController@scenarios')->before('isAdmin');
 
-Route::get('project_master/index', ['as' => 'project_master.index', 'uses' => 'ProjectMastersController@index', 'before' => 'isAdmin']);
+Route::get('project_master/index', ['as' => 'project_master.index', 'uses' => 'ProjectMastersController@index', 'before' => 'auth']);
 Route::get('project_master/create', ['as' => 'project_master.create', 'uses' => 'ProjectMastersController@create', 'before' => 'isAdmin']);
 Route::post('project_master/store', ['as' => 'project_master.store', 'uses'  => 'ProjectMastersController@store', 'before' => 'isAdmin']);
 Route::get('project_master/new_project_form', ['as' => 'project_master.new_project_form', 'uses' => 'ProjectMastersController@new_project_form', 'before' => 'isAdmin']);
 Route::post('project_master/store_new_project_form', ['as' => 'project_master.store_new_project_form', 'uses'  => 'ProjectMastersController@store_new_project_form', 'before' => 'isAdmin']);
+
+Route::get('project_master/logo_upload_form', ['as' => 'project_master.logo_upload_form', 'uses' => 'ProjectMastersController@logo_upload_form', 'before' => 'isAdmin']);
+Route::post('project_master/store_logo', ['as' => 'project_master.store_logo', 'uses'  => 'ProjectMastersController@store_logo', 'before' => 'isAdmin']);
+
+Route::get('project_master/pdf_upload_form', ['as' => 'project_master.pdf_upload_form', 'uses' => 'ProjectMastersController@pdf_upload_form', 'before' => 'isAdmin']);
+Route::post('project_master/store_pdf', ['as' => 'project_master.store_pdf', 'uses'  => 'ProjectMastersController@store_pdf', 'before' => 'isAdmin']);
+
+Route::get('project_master/assign_project_form', ['as' => 'project_master.assign_project_form', 'uses' => 'ProjectMastersController@assign_project_form', 'before' => 'auth']);
+Route::post('project_master/store_assign_project', ['as' => 'project_master.store_assign_project', 'uses'  => 'ProjectMastersController@store_assign_project', 'before' => 'auth']);
 
 // Confide routes
 Route::get('users/create', 'UsersController@create');

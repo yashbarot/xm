@@ -37,6 +37,75 @@ class ProjectMastersController extends \BaseController {
 		return View::make('projectmasters.new_project_form',compact('projects'));
 	}
 
+	public function assign_project_form(){
+		$projects = $this->project_master->lists('name','id');
+		$users = User::lists('username','id');
+		return View::make('projectmasters.assign_project_form',compact('projects','users'));
+	}
+	public function store_assign_project() {
+		$project_id = Input::get('project_master_id');
+		$user_id = Input::get('user_id');
+		DB::table('project_masters')->where('id','=',$project_id)->update(['users_id' => $user_id]);
+    	Session::flash('message', 'Project has been assigned successfully.'); 
+		Session::flash('alert-class', 'alert-success');		
+		return Redirect::route('project_master.index');
+
+	}
+
+	public function logo_upload_form(){
+		$projects = $this->project_master->lists('name','id');
+		return View::make('projectmasters.logo_upload_form',compact('projects'));
+	}
+	public function store_logo() {
+		$file = Input::file('file');
+		$id = Input::get('project_master_id');
+		if ($file)
+		{
+		$destinationPath = 'logos/';
+        $upload = $file->move($destinationPath,$file->getClientOriginalName());
+
+        $file_path = $destinationPath.$file->getClientOriginalName();
+	        if($upload){
+	        	DB::table('logos')->insert(['project_master_id' => $id,'path' => $file_path]);
+	        	Session::flash('message', 'Project logo has been uploaded successfully.'); 
+				Session::flash('alert-class', 'alert-success');		
+				return Redirect::route('project_master.index');
+			}
+			else{
+				Session::flash('message', 'Problem with logo upload'); 
+				Session::flash('alert-class', 'alert-danger');		
+				return Redirect::route('project_master.logo_upload_form');			
+			}
+        }
+	}
+
+	public function pdf_upload_form(){
+		$projects = $this->project_master->lists('name','id');
+		return View::make('projectmasters.pdf_upload_form',compact('projects'));
+	}
+	public function store_pdf() {
+		$file = Input::file('file');
+		$id = Input::get('project_master_id');
+		if ($file)
+		{
+		$destinationPath = 'pdfs/';
+        $upload = $file->move($destinationPath,$file->getClientOriginalName());
+
+        $file_path = $destinationPath.$file->getClientOriginalName();
+	        if($upload){
+	        	DB::table('pdfs')->insert(['project_master_id' => $id,'path' => $file_path]);
+	        	Session::flash('message', 'Project logo has been uploaded successfully.'); 
+				Session::flash('alert-class', 'alert-success');		
+				return Redirect::route('project_master.index');
+			}
+			else{
+				Session::flash('message', 'Problem with logo upload'); 
+				Session::flash('alert-class', 'alert-danger');		
+				return Redirect::route('project_master.pdf_upload_form');			
+			}
+        }
+	}
+
 
 	/**
 	 * Store a newly created resource in storage.

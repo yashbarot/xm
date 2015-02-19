@@ -18,7 +18,17 @@ class SimulatorController extends BaseController {
 		$data_columns_fix = DB::table('project_data')->where('project_id','=',$id)->distinct()->lists('column_13');
 		$scenarios = DB::table('scenarios')->where('project_id','=',$id)->get();
 		$column_14 = DB::table('project_data')->where('project_id','=',$id)->distinct()->lists('column_14');
-		return View::make('simulators.index',compact('id','category_names','data_columns','data_columns_fix','scenarios','column_14'));
+		$logo = DB::table('logos')->where('project_master_id','=',$id)->lists('path');
+		$pdf = DB::table('pdfs')->where('project_master_id','=',$id)->lists('path');
+		$user_id = DB::table('project_masters')->where('id','=',$id)->lists('users_id');
+		
+		if($user_id[0] == Auth::id()){
+			return View::make('simulators.index',compact('id','category_names','data_columns','data_columns_fix','scenarios','column_14','logo','pdf'));	
+		}
+		else {
+			return View::make('homepage');
+		}
+		
 	}
 
 	public function doFiltering() {
