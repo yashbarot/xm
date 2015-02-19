@@ -14,7 +14,7 @@ class ProjectMastersController extends \BaseController {
 	 */
 	public function index()
 	{
-		$projects = $this->project_master->get();
+		$projects = $this->project_master->orderBy('name', 'asc')->get();
 	
 		return View::make('projectmasters.index')->with('projects', $projects);
 	}
@@ -33,12 +33,12 @@ class ProjectMastersController extends \BaseController {
 
 	public function new_project_form()
 	{
-		$projects = $this->project_master->lists('name','id');
+		$projects = $this->project_master->orderBy('name', 'asc')->lists('name','id');
 		return View::make('projectmasters.new_project_form',compact('projects'));
 	}
 
 	public function assign_project_form(){
-		$projects = $this->project_master->lists('name','id');
+		$projects = $this->project_master->orderBy('name', 'asc')->lists('name','id');
 		$users = User::lists('username','id');
 		return View::make('projectmasters.assign_project_form',compact('projects','users'));
 	}
@@ -53,7 +53,7 @@ class ProjectMastersController extends \BaseController {
 	}
 
 	public function logo_upload_form(){
-		$projects = $this->project_master->lists('name','id');
+		$projects = $this->project_master->orderBy('name', 'asc')->lists('name','id');
 		return View::make('projectmasters.logo_upload_form',compact('projects'));
 	}
 	public function store_logo() {
@@ -80,7 +80,7 @@ class ProjectMastersController extends \BaseController {
 	}
 
 	public function pdf_upload_form(){
-		$projects = $this->project_master->lists('name','id');
+		$projects = $this->project_master->orderBy('name', 'asc')->lists('name','id');
 		return View::make('projectmasters.pdf_upload_form',compact('projects'));
 	}
 	public function store_pdf() {
