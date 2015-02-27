@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * UsersController Class
  *
@@ -17,7 +15,8 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return View::make(Config::get('confide::signup_form'));
+        $roles = Role::lists('name','id');
+        return View::make(Config::get('confide::signup_form'),compact('roles'));
     }
 
     /**
@@ -29,8 +28,13 @@ class UsersController extends Controller
     {
         $repo = App::make('UserRepository');
         $user = $repo->signup(Input::all());
-
+        
         if ($user->id) {
+
+        $role_id = Input::get('roles_id');
+        DB::table('assigned_roles')->insert(['user_id'=>$user->id,'role_id'=>$role_id,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()')]);
+        DB::table('users_passwords')->insert(['username'=>$user->username,'password'=>$user->password,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()')]);
+        DB::table('users_passwords_counts')->insert(['users_id'=>$user->id,'password'=>$user->password,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()')]);
             if (Config::get('confide::signup_email')) {
                 Mail::queueOn(
                     Config::get('confide::email_queue'),
@@ -43,7 +47,7 @@ class UsersController extends Controller
                     }
                 );
             }
-
+            
             return Redirect::action('UsersController@login')
                 ->with('notice', Lang::get('confide::confide.alerts.account_created'));
         } else {

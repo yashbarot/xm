@@ -5,7 +5,7 @@ class ProjectMastersController extends \BaseController {
 	protected $project_master;
 
 	public function __construct(ProjectMaster $project_master){
-		$this->project_master= $project_master;
+		$this->project_master = $project_master;
 	}
 	/**
 	 * Display a listing of the resource.
@@ -45,10 +45,19 @@ class ProjectMastersController extends \BaseController {
 	public function store_assign_project() {
 		$project_id = Input::get('project_master_id');
 		$user_id = Input::get('user_id');
-		DB::table('project_masters')->where('id','=',$project_id)->update(['users_id' => $user_id]);
-    	Session::flash('message', 'Project has been assigned successfully.'); 
-		Session::flash('alert-class', 'alert-success');		
-		return Redirect::route('project_master.index');
+		$validator = DB::table('assign_projects')->where('project_master_id','=',$project_id)->where('users_id','=',$user_id)->first();
+		if(empty($validator)){
+			
+			DB::table('assign_projects')->insert(['project_master_id' => $project_id,'users_id' => $user_id]);
+	    	Session::flash('message', 'Project has been assigned successfully.'); 
+			Session::flash('alert-class', 'alert-success');		
+			return Redirect::route('project_master.index');
+		}
+		else{
+			Session::flash('message', 'Project already assigned to user'); 
+			Session::flash('alert-class', 'alert-danger');
+			return Redirect::route('project_master.index');
+		}
 
 	}
 
@@ -150,9 +159,7 @@ class ProjectMastersController extends \BaseController {
 		$project_master_id = Input::get('project_master_id');
 		DB::table('reach')->where('project_id','=',$project_master_id)->delete();
 		DB::table('frequency')->where('project_id','=',$project_master_id)->delete();
-		DB::table('grp')->where('project_id','=',$project_master_id)->delete();
-		DB::table('media')->where('project_id','=',$project_master_id)->delete();
-		DB::table('contribution')->where('project_id','=',$project_master_id)->delete();
+		DB::table('uplift')->where('project_id','=',$project_master_id)->delete();
 		DB::table('project_data')->where('project_id','=',$project_master_id)->delete();
 
 		foreach ($results as $key => $value) {		
@@ -161,65 +168,35 @@ class ProjectMastersController extends \BaseController {
 		$k = 1;
 		$l = 1;
 		$m = 1;
-		$n = 1;
-		$o = 1;
+
 		$column_num 	= [];
 		$reach 			= [];
 		$frequency 		= [];
-		$grp 			= [];
-		$media 			= [];
-		$contribution 	= [];
+		$uplift 	    = [];
+		
 		$column_num['project_id'] = $project_master_id;
 		$reach['project_id'] = $project_master_id;
 		$frequency['project_id'] = $project_master_id;
-		$grp['project_id'] = $project_master_id;
-		$media['project_id'] = $project_master_id;
-		$contribution['project_id'] = $project_master_id;
+		$uplift['project_id'] = $project_master_id;
 	
 			foreach($value as $key1 => $a){
 				if($j < 17) {
-					if($a!=NULL && $key1!='no filter'){
+					if($key1!='no filter'){
 						$column_num['column_'.$i] = $a;
-					}if($key1 === 'no filter'){
+					} else {
 						$j = 12;
 						$i = 12;
 					}
 					$i++;
 				} else if($j > 16 && $j < 40) {
-					if($a!=NULL){
-						$reach['column_'.$k] = $a;
-					} else {
-						$reach['column_'.$k] = 0;
-					}
+					$reach['column_'.$k] = $a;					 
 					$k++;
 				} else if($j > 39 && $j < 63) {
-					if($a!=NULL){
-						$frequency['column_'.$l] = $a;
-					} else {
-						$frequency['column_'.$l] = 0;
-					}
+					$frequency['column_'.$l] = $a;
 					$l++;
 				} else if($j > 62 && $j < 86) {
-					if($a!=NULL){
-						$grp['column_'.$m] = $a;
-					} else {
-						$grp['column_'.$m] = 0;
-					}
+					$uplift['column_'.$m] = $a;
 					$m++;
-				} else if($j > 85 && $j < 109) {
-					if($a!=NULL){
-						$media['column_'.$n] = $a;
-					} else {
-						$media['column_'.$n] = 0;
-					}
-					$n++;
-				} else if($j > 108 && $j < 132) {
-					if($a!=NULL){
-						$contribution['column_'.$o] = $a;
-					} else {
-						$contribution['column_'.$o] = 0;
-					}
-					$o++;
 				} 
 				$j++;
 			}
@@ -228,16 +205,12 @@ class ProjectMastersController extends \BaseController {
 			
 			$reach['project_data_id'] 			= $id;
 			$frequency['project_data_id'] 		= $id;
-			$grp['project_data_id'] 			= $id;
-			$media['project_data_id'] 			= $id;
-			$contribution['project_data_id'] 	= $id;
-	
+			$uplift['project_data_id'] 			= $id;
 			
 			DB::table('reach')->insert($reach);
 			DB::table('frequency')->insert($frequency);
-			DB::table('grp')->insert($grp);
-			DB::table('media')->insert($media);
-			DB::table('contribution')->insert($contribution);
+			DB::table('uplift')->insert($uplift);
+			
 		}
 
 

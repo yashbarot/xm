@@ -9,8 +9,6 @@
   {{ HTML::style('css/bootstrap.min.css'); }}
   {{ HTML::style('css/style.css'); }}
   {{ HTML::script('js/jquery.min.js') }}
-  {{ HTML::script('js/Chart.js') }}
-  {{ HTML::script('js/Chart.StackedBar.js') }}
   {{ HTML::script('js/bootstrap.min.js') }}
 </head>
 <body>

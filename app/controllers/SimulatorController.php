@@ -58,11 +58,7 @@ class SimulatorController extends BaseController {
 			array_push($all_data,$temp_data);
 			$temp_data = DB::table('frequency')->where('project_data_id','=',$value)->first();
 			array_push($all_data,$temp_data);
-			$temp_data = DB::table('grp')->where('project_data_id','=',$value)->first();
-			array_push($all_data,$temp_data);
-			$temp_data = DB::table('media')->where('project_data_id','=',$value)->first();
-			array_push($all_data,$temp_data);
-			$temp_data = DB::table('contribution')->where('project_data_id','=',$value)->first();
+			$temp_data = DB::table('uplift')->where('project_data_id','=',$value)->first();
 			array_push($all_data,$temp_data);
 			$temp_all_data[$media_type[$i]] = $all_data;
 			$i++;

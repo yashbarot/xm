@@ -11,17 +11,21 @@
 <script type="text/javascript">
     $(document).ready(function(){
        
-       $(".filter_btn").on('click',function(){
+       $(".filters").on('change',function(){
         
-        var $this = $(this);
+        var $this = $(".filter_btn");
         var filters = [];
 
         var i = 0;
 
 		$(".filters").each(function(){
-			filters[i] = $(this).val();
-			i++;
+				filters[i] = $(this).val();
+				i++;
 		});
+
+		if(filters.indexOf("0") > -1 ){
+			return false;
+		}
 
         var request = $.ajax({
 					            type: $this.data('method'),
@@ -32,7 +36,7 @@
         
         request.done(function(response){
         	data_array = response;
-             	var type_media = ['#reach_100','#frequency_100','#grp_100','#media_100','#contribution_100'];
+             	var type_media = ['#reach_100','#frequency_100','#media_100'];
              	var i = 0;
              	$.each(response,function(key,value) {
              		j = 0;
@@ -75,12 +79,12 @@
 		    return n;
 		}
 
-		$("select").on('change',function(){
+		$(".scenarios").on('change',function(){
 			$("#total").html(((parseInt($("#media_uplift").html())) || 0 )+parseInt($("#base").html())+parseInt($("#non_uplift").html()));
 		});
   		
-  		$('select').on('change',function(){
-  			var type_media1 = ['#reach','#frequency','#grp','#media','#contribution'];
+  		$('.scenarios').on('change',function(){
+  			var type_media1 = ['#reach','#frequency','#media'];
   			var k = 0;
   			var z = 0;
   			var ab = $(this);
@@ -138,6 +142,7 @@
 <div class="panel-heading">
 <div class="row">
 <div class="col-md-10"><h2>Simulator</h2></div>
+{{HTML::link($pdf[0],'Help',['download'=>'download'])}}
 </div>
 <hr style="margin-top: 0px;margin-bottom: 25px;"/>
 <div class="row" style="margin-left: 1px;">   
@@ -148,7 +153,7 @@
         @foreach($data_columns as $filters)
 		        <p class="filter_dropdown" style="margin: 5px;text-transform: capitalize;font-weight:600;">{{$category_names[$count]}}
 		        <select class="form-control filters">
-		        <?php echo '<pre>'; var_dump($filters); ?>
+		        <option value="0"> Please Select </option>
 		        @foreach($filters as $filter)
 			            <option value="{{$filter}}" class="form-control">{{$filter}}</option>
 			    @endforeach
@@ -156,7 +161,7 @@
 		        </p>
 		        <?php $count++; ?>
         @endforeach
-        <button class="btn btn-info filter_btn" style="float:right;margin: 20px;" data-id="{{$id}}" data-method="post" data-href="{{Request::root()}}/simulator/filters" data-projects="{{Request::root()}}/simulator/projects" data-scenarios="{{Request::root()}}/simulator/scenarios">Filter</button><br/>
+        <button class="btn btn-info filter_btn" style="display:none;" data-id="{{$id}}" data-method="post" data-href="{{Request::root()}}/simulator/filters" data-projects="{{Request::root()}}/simulator/projects" data-scenarios="{{Request::root()}}/simulator/scenarios">Filter</button><br/>
     </div>
 	</div>
 </div>
@@ -228,7 +233,7 @@
 		    	<tr>
 			    	@for ($i = 0; $i < $count; $i++)
 	    				<td colspan="2">
-	    					<select class="{{$data_columns_fix[$i]}}" id="{{$data_columns_fix[$i]}}">
+	    					<select class="{{$data_columns_fix[$i]}} scenarios" id="{{$data_columns_fix[$i]}}">
 	    						@foreach($scenarios as $scenario)
 	    						@if($scenario->value == '100')
 	    							<option value="{{$scenario->value}}" selected="selected" >{{$scenario->value}}</option>
