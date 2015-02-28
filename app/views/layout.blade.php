@@ -10,6 +10,11 @@
   {{ HTML::style('css/style.css'); }}
   {{ HTML::script('js/jquery.min.js') }}
   {{ HTML::script('js/bootstrap.min.js') }}
+  <script type="text/javascript">
+    $(document).ready(function(){
+        $('select').addClass('form-control');    
+    });
+</script> 
 </head>
 <body>
 

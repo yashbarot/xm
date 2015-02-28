@@ -194,7 +194,7 @@
 					<th>Constant Values</th>
 				</tr>
 				<tr>
-					<td style="height: 39px;">Increase/Decrease Budget</td>
+					<td style="height: 60px;">Increase/Decrease Budget</td>
 				</tr>
 				<tr>
 					<td>Reach</td>
