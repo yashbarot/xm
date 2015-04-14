@@ -14,8 +14,8 @@ class ProjectMastersController extends \BaseController {
 	 */
 	public function index()
 	{
-		$projects = $this->project_master->orderBy('name', 'asc')->get();
-	
+		$projects = $this->project_master->orderBy('name', 'asc')->lockForUpdate()->get();
+		
 		return View::make('projectmasters.index')->with('projects', $projects);
 	}
 

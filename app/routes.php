@@ -35,6 +35,9 @@ Route::post('project_master/store_pdf', ['as' => 'project_master.store_pdf', 'us
 Route::get('project_master/assign_project_form', ['as' => 'project_master.assign_project_form', 'uses' => 'ProjectMastersController@assign_project_form', 'before' => 'auth']);
 Route::post('project_master/store_assign_project', ['as' => 'project_master.store_assign_project', 'uses'  => 'ProjectMastersController@store_assign_project', 'before' => 'auth']);
 
+Route::get('users/updatepassword_form', ['as' => 'users.updatepassword_form', 'uses' => 'UsersController@updatepassword_form', 'before' => 'auth']);
+Route::post('users/updatepassword', ['as' => 'users.updatepassword', 'uses'  => 'UsersController@updatepassword', 'before' => 'auth']);
+
 // Confide routes
 Route::get('users/create', 'UsersController@create');
 Route::post('users', 'UsersController@store');

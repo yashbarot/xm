@@ -15,8 +15,9 @@ class UsersController extends Controller
      */
     public function create()
     {
+
         $roles = Role::lists('name','id');
-        return View::make(Config::get('confide::signup_form'),compact('roles'));
+        return View::make(Config::get('confide::signup_form'),compact('details','roles'));
     }
 
     /**
@@ -34,7 +35,7 @@ class UsersController extends Controller
         $role_id = Input::get('roles_id');
         DB::table('assigned_roles')->insert(['user_id'=>$user->id,'role_id'=>$role_id,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()')]);
         DB::table('users_passwords')->insert(['username'=>$user->username,'password'=>$user->password,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()')]);
-        DB::table('users_passwords_counts')->insert(['users_id'=>$user->id,'password'=>$user->password,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()')]);
+        DB::table('users_passwords_counts')->insert(['users_id'=>$user->id,'created_at' => DB::raw('NOW()'),'updated_at' => DB::raw('NOW()'),'counter' => 1]);
             if (Config::get('confide::signup_email')) {
                 Mail::queueOn(
                     Config::get('confide::email_queue'),
@@ -186,6 +187,37 @@ class UsersController extends Controller
             return Redirect::action('UsersController@resetPassword', array('token'=>$input['token']))
                 ->withInput()
                 ->with('error', $error_msg);
+        }
+    }
+
+    public function updatepassword_form() {
+        return View::make('users.updatepassword_form');
+    }
+
+    public function updatepassword() {
+        $password = Input::get('password');
+        $confirm_password = Input::get('password_confirmation');
+        if($password === $confirm_password) {
+            $users_password = DB::table('users_passwords')->where('users_id','=',Auth::user()->id)->first();    
+            $counter_row = DB::table('users_passwords_counts')->where('users_id','=',Auth::user()->id)->first();    
+            $hashed_password = $users_password->password;
+            $counter = $counter_row->counter;
+            if (Hash::check($password, $hashed_password))
+            {
+                if($counter > 40) {
+                    echo "Allowed(update-users|users_passwords|counter)";
+                }
+                else {
+                    echo "Not Allowed";
+                }
+
+            }else {
+                echo "Updated";
+            }
+
+        }
+        else {
+            return View::make('users.updatepassword_form');
         }
     }
 

@@ -58,14 +58,17 @@
         <li>{{ HTML::link('project_master/assign_project_form', 'Assign Project') }}</li>
         @endif
         <li>
-          <a href="{{Request::root()}}/project_master/index">Project Master</a>
+          {{ HTML::link('project_master/index', 'Project Master') }}
+        </li>
+        <li>
+          {{ HTML::link('users/updatepassword_form', 'Reset Password') }}
         </li>
       
       </ul>
       @endif
       <ul class="nav navbar-nav navbar-right">
         @if(!Auth::check())
-      
+  
       <li>
       
       <a href="{{Request::root()}}/users/create"><i class="fa fa-user"><i class="fa fa-plus fa-xs" style="font-size: 8px;vertical-align: top;"></i></i>&nbsp;Register</a>
