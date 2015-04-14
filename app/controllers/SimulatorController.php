@@ -35,16 +35,16 @@ class SimulatorController extends BaseController {
 		$category_names = Input::get('category_names');
 		$project_id = Input::get('id');
 		$size = sizeof($category_names);
-		$extra = "Select * from project_data where project_id = {$project_id}";
+		$extra_query = "Select * from project_data where project_id = {$project_id}";
 		for ($i=1; $i < $size; $i++) { 
-				$extra .= " AND column_".$i." = '".$category_names[$i-1]."'"; 
+				$extra_query .= " AND column_".$i." = '".$category_names[$i-1]."'"; 
 		}
-		$extra .= " AND column_14 = '".$category_names[$size-1]."'";
+		$extra_query .= " AND column_14 = '".$category_names[$size-1]."'";
 		$media_type = DB::table('project_data')->where('project_id','=',$project_id)->distinct()->lists('column_13');
 		$data = [];
 		$temp_id = [];
 		foreach($media_type as $key => $value){        	
-			$temp = $extra;
+			$temp = $extra_query;
 			$temp .= " AND column_13 = '".$value."'"; 
 			$results = DB::select(DB::raw($temp));
 			array_push($temp_id, $results[0]->id);
@@ -70,13 +70,13 @@ class SimulatorController extends BaseController {
 		$category_names = Input::get('category_names');
 		$project_id = Input::get('id');
 		$size = sizeof($category_names);
-		$extra = "Select * from project_data where project_id = {$project_id}";
+		$extra_query = "Select * from project_data where project_id = {$project_id}";
 		for ($i=1; $i < $size; $i++) { 
-				$extra .= " AND column_".$i." = '".$category_names[$i-1]."'"; 
+				$extra_query .= " AND column_".$i." = '".$category_names[$i-1]."'"; 
 		}
-		$extra .= " AND column_14 = '".$category_names[$size-1]."'";
-		$extra .= " LIMIT 1";
-		$results = DB::select(DB::raw($extra));
+		$extra_query .= " AND column_14 = '".$category_names[$size-1]."'";
+		$extra_query .= " LIMIT 1";
+		$results = DB::select(DB::raw($extra_query));
 		return json_encode($results[0]);
 	}
 

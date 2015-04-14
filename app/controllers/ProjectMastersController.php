@@ -179,23 +179,23 @@ class ProjectMastersController extends \BaseController {
 		$frequency['project_id'] = $project_master_id;
 		$uplift['project_id'] = $project_master_id;
 	
-			foreach($value as $key1 => $a){
+			foreach($value as $indexes => $content){
 				if($j < 17) {
-					if($key1!='no filter'){
-						$column_num['column_'.$i] = $a;
+					if($indexes!='no filter'){
+						$column_num['column_'.$i] = $content;
 					} else {
 						$j = 12;
 						$i = 12;
 					}
 					$i++;
 				} else if($j > 16 && $j < 40) {
-					$reach['column_'.$k] = $a;					 
+					$reach['column_'.$k] = $content;					 
 					$k++;
 				} else if($j > 39 && $j < 63) {
-					$frequency['column_'.$l] = $a;
+					$frequency['column_'.$l] = $content;
 					$l++;
 				} else if($j > 62 && $j < 86) {
-					$uplift['column_'.$m] = $a;
+					$uplift['column_'.$m] = $content;
 					$m++;
 				} 
 				$j++;
@@ -237,7 +237,7 @@ class ProjectMastersController extends \BaseController {
 		foreach ($results as $key => $value) {			
 			DB::table('scenarios')->insert(['project_id' => $project_master_id,'value' => $value->value]);
 		}	
-	})->get();
+	    })->get();
 		
 		Session::flash('message', 'Data has been imported successfully.'); 
 		Session::flash('alert-class', 'alert-success');		
@@ -246,28 +246,7 @@ class ProjectMastersController extends \BaseController {
         }
        }
 	}
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
 
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit(Permission $permission)
-	{
-		return View::make('permissions.edit', compact('permission'));
-	}
 
 
 	/**
@@ -283,7 +262,7 @@ class ProjectMastersController extends \BaseController {
 		$permission->name = Input::get('name');
 		$permission->display_name = Input::get('displayname');
 		$permission->save();
-		Session::flash('message', 'Permission has been updated successfully.'); 
+		Session::flash('message', 'Project master has been updated successfully.'); 
 		Session::flash('alert-class', 'alert-success');		
 		return Redirect::route('permissions.index');
 	}
@@ -299,7 +278,7 @@ class ProjectMastersController extends \BaseController {
 	{
 		$permission = $this->project_master->find($id);
 		$permission->delete();
-		Session::flash('message', 'Permission has been deleted successfully.'); 
+		Session::flash('message', 'Project has been deleted successfully.'); 
 		Session::flash('alert-class', 'alert-success');
         return Redirect::route('permissions.index');
 	}

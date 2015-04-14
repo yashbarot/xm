@@ -11,28 +11,23 @@
 <script type="text/javascript">
     $(document).ready(function(){
        
-       $(".filters").on('change',function(){
-        
+       $(".filters").on('change',function(){     
         var $this = $(".filter_btn");
         var filters = [];
-
         var i = 0;
-
 		$(".filters").each(function(){
 				filters[i] = $(this).val();
 				i++;
 		});
-
 		if(filters.indexOf("0") > -1 ){
 			return false;
 		}
-
         var request = $.ajax({
-					            type: $this.data('method'),
-					            url: $this.data('href'),
-					            data: {category_names: filters,id:$this.data('id')},
-					            dataType: 'json'
-					        });
+            type: $this.data('method'),
+            url: $this.data('href'),
+            data: {category_names: filters,id:$this.data('id')},
+            dataType: 'json'
+		});
         
         request.done(function(response){
         	data_array = response;
@@ -40,7 +35,7 @@
              	var i = 0;
              	$.each(response,function(key,value) {
              		j = 0;
-             		$.each(value,function(key1,data) {
+             		$.each(value,function(index,data) {
              			$(type_media[j]+i).html(data['column_1']);
              			j = j+1;
              		});
@@ -49,28 +44,28 @@
 	        });
 
         var request1 = $.ajax({
-					            type: $this.data('method'),
-					            url: $this.data('projects'),
-					            data: {category_names: filters,id:$this.data('id')},
-					            dataType: 'json'
-					        });
+            type: $this.data('method'),
+            url: $this.data('projects'),
+            data: {category_names: filters,id:$this.data('id')},
+            dataType: 'json'
+        });
 
         request1.done(function(response1){
-        		$("#base").html(response1.column_15);
-        		$("#non_uplift").html(response1.column_16);
-	        });
+    		$("#base").html(response1.column_15);
+    		$("#non_uplift").html(response1.column_16);
+        });
 
         var request2 = $.ajax({
-					            type: $this.data('method'),
-					            url: $this.data('scenarios'),
-					            data: {id:$this.data('id')},
-					            dataType: 'json'
-					        });
+            type: $this.data('method'),
+            url: $this.data('scenarios'),
+            data: {id:$this.data('id')},
+            dataType: 'json'
+        });
         request2.done(function(response2){
-        		scenario_data = response2;
-	        });
+    		scenario_data = response2;
+        });
 
-      });
+        });
 
 		function nearest(n, v, e) {
 			n = n / e;
@@ -92,7 +87,7 @@
              	$.each(data_array,function(key,value) {
              		l = 0;
              		if(key == ab.attr('class')) {
-	             		$.each(value,function(key1,data) {
+	             		$.each(value,function(index,data) {
 	             			a = index+1;
 	             			if(ab.val() != "100") {
 	             				$(type_media1[l]+k).html(data['column_'+a]);
@@ -111,22 +106,22 @@
              			
              			if(split.length == 2) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val());
-             				var temp_value = nearest(add_value,5,2);
+             				var value_storage = nearest(add_value,5,2);
              			} if(split.length == 3) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val());
-             				var temp_value = nearest(add_value,5,3);
+             				var value_storage = nearest(add_value,5,3);
              			} if(split.length == 4) {
              				var add_value = parseInt($("#"+split[0]).val())+parseInt($("#"+split[1]).val())+parseInt($("#"+split[2]).val())+parseInt($("#"+split[3]).val());;
-             				var temp_value = nearest(add_value,5,4);
+             				var value_storage = nearest(add_value,5,4);
              			}
              			var data_key;
              				for (data in scenario_data) {
-             					if(scenario_data[data] == temp_value) {
+             					if(scenario_data[data] == value_storage) {
              						data_key = data;
   								}
              				}
              				l = 0;
-             				$.each(value,function(key1,data) {
+             				$.each(value,function(index,data) {
              					b = parseInt(data_key)+1;
 	             				$(type_media1[l]+z).html(data['column_'+b]);
 	             				l = l+1;
